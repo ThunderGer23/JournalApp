@@ -11,7 +11,7 @@ export const NoteView = () => {
             <Grid item>
                 <Typography
                     fontSize={39}
-                    fontWeight='light'> Nombre del vato UwUr</Typography>
+                    fontWeight='blod'> Nombre del vato UwUr</Typography>
             </Grid>
             <Grid item>
                 <Button
@@ -39,6 +39,9 @@ export const NoteView = () => {
                     label ="Descripción"
                     minRows={5}
                     sx={{border: 'none', mb:1}}/> */}
+                <Typography
+                    fontSize={25}
+                    fontWeight='light'> Recent</Typography>
                 <FilesList  fullWidth/>
             </Grid>
 
