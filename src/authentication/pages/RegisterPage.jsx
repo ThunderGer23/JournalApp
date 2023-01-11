@@ -13,7 +13,7 @@ const formData = {
 const formValidations = {
   email: [ (value) => value.includes('.ipn') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
   password: [ (value) => value.length >= 8 , 'El password debe tener más de 8 letras'],
-  displayName : [ (value) => value.length >= 8 , 'El nombre es obligatorio y debe tener más de 8 letras']
+  displayName : [ (value) => value.length >= 8 , 'El nombre completo del usuario es obligatorio']
 }
 
 export const RegisterPage = () => {
@@ -28,14 +28,26 @@ export const RegisterPage = () => {
     setFormSubmitted(true)
     const valid = validEmail(formState.email, formState.displayName)
     if (!isFormValid || !valid) return;
-    console.log(formState)
+    // console.log(formState)
     console.log(valid)
-    console.log(!isFormValid)
+    // console.log(!isFormValid)
   }
 
   const validEmail = (email, name) => {
+    let regex = /(\d+)/g;
     const newname = name.toLowerCase().split(' ')
-    const validate = newname[0].substr(0, 1) + newname[2] + newname[3].substr(0, 1)
+    if(newname.length <=2) return false
+    const newEmailTest = email.substr(1, (email.indexOf(email.match(regex)[0])-2))
+    let searchLastName = 0
+    for( const value of newname){
+      searchLastName++
+      if(value === newEmailTest) break
+    }
+
+    let validate = (searchLastName === 1)
+      ? newname[searchLastName+1].substr(0, 1) + newname[searchLastName*0] + newname[searchLastName].substr(0, 1)
+      : newname[searchLastName*0].substr(0, 1) + newname[searchLastName-1] + newname[searchLastName].substr(0, 1)
+    
     return email.substr(0,email.search('@')).includes(validate)
   }
 
