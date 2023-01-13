@@ -1,2 +1,2 @@
 export { FirebaseApp, FirebaseAuth, FirebaseDB, analytics } from './config';
-export { singInWithGoogle } from './providers';
+export { loginWithEmailPassword, registerUserWithEmailPassword, singInWithGoogle } from './providers';

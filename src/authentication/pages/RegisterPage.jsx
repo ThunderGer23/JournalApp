@@ -1,8 +1,10 @@
 import { Link as RouterLink } from 'react-router-dom'
-import { Button, Grid, Link, TextField, Typography } from "@mui/material"
+import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { AuthLayout } from '../layout/AuthLayout'
 import { useForm } from '../../hooks'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { startCreatingUserWithEmailPassword } from '../../store/auth'
 
 const formData = {
   email: '',
@@ -13,12 +15,16 @@ const formData = {
 const formValidations = {
   email: [ (value) => value.includes('.ipn') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
   password: [ (value) => value.length >= 8 , 'El password debe tener más de 8 letras'],
-  displayName : [ (value) => value.length >= 8 , 'El nombre completo del usuario es obligatorio']
+  displayName : [ (value) => value.length >= 8 , 'El nombre es obligatorio y debe tener más de 8 letras']
 }
 
 export const RegisterPage = () => {
 
+  const dispatch = useDispatch()
   const [formSubmitted, setFormSubmitted] = useState(false)
+
+  const {status, errorMessage} = useSelector(state => state.auth)
+  const isCheckingAuthentication = useMemo(() => status === 'authenticated', [status])
 
   const {formState, displayName, email, password, onInputChange,
           isFormValid, displayNameValid, emailValid, passwordValid} = useForm( formData, formValidations)
@@ -27,29 +33,16 @@ export const RegisterPage = () => {
     event.preventDefault()
     setFormSubmitted(true)
     const valid = validEmail(formState.email, formState.displayName)
-    if (!isFormValid || !valid) return;
+    if (!isFormValid) return;
+
+    dispatch(startCreatingUserWithEmailPassword(formState))
     // console.log(formState)
-    console.log(valid)
+    // console.log(valid)
     // console.log(!isFormValid)
   }
 
-  const validEmail = (email, name) => {
-    let regex = /(\d+)/g;
-    const newname = name.toLowerCase().split(' ')
-    if(newname.length <=2) return false
-    const newEmailTest = email.substr(1, (email.indexOf(email.match(regex)[0])-2))
-    let searchLastName = 0
-    for( const value of newname){
-      searchLastName++
-      if(value === newEmailTest) break
-    }
-
-    let validate = (searchLastName === 1)
-      ? newname[searchLastName+1].substr(0, 1) + newname[searchLastName*0] + newname[searchLastName].substr(0, 1)
-      : newname[searchLastName*0].substr(0, 1) + newname[searchLastName-1] + newname[searchLastName].substr(0, 1)
-    
-    return email.substr(0,email.search('@')).includes(validate)
-  }
+  let validUser = false
+  const validEmail = (email, name) => email.substr(0,email.search('@')).includes(name.toLowerCase().split(' ')[0].substr(0, 1) + name.toLowerCase().split(' ')[2] + name.toLowerCase().split(' ')[3].substr(0, 1))
 
   return (
     <AuthLayout title='Crear Cuenta'>
@@ -66,6 +59,14 @@ export const RegisterPage = () => {
               onChange ={onInputChange}
               error ={!!displayNameValid && formSubmitted}
               helperText={(formSubmitted)?displayNameValid:null}/>
+
+            <Grid
+              item
+              xs = {12}
+              sx = {{mt:2}}
+              display= {!!validUser?'':'none'}>
+              <Alert severity='error'>El nombre del usuario ⬆️ y el correo no coinciden ⬇️</Alert>
+            </Grid>
           </Grid>
 
           <Grid item xs = {12} sx= {{mt:2}}>
@@ -79,6 +80,15 @@ export const RegisterPage = () => {
               onChange ={onInputChange}
               error ={!!emailValid && formSubmitted}
               helperText={(formSubmitted)?emailValid:null}/>
+
+            <Grid
+              item
+              xs = {12}
+              sx = {{mt:2}}
+              display= {!!errorMessage?'':'none'}>
+              <Alert severity='error'>{errorMessage}</Alert>
+            </Grid>
+
           </Grid>
           
           <Grid item xs = {12} sx= {{mt:2}}>
@@ -95,8 +105,10 @@ export const RegisterPage = () => {
           </Grid>
 
           <Grid container spacing={2} sx={{mb:2, mt:1}}>
+
+            
             <Grid item xs = {12}>
-              <Button type='submit' variant="contained" fullWidth>
+              <Button disabled={isCheckingAuthentication} type='submit' variant="contained" fullWidth>
                 Crear Cuenta
               </Button>
             </Grid>
