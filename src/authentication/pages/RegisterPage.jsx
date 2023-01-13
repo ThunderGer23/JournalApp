@@ -13,13 +13,14 @@ const formData = {
 }
 
 const formValidations = {
-  email: [ (value) => value.includes('.ipn') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
+  email: [ (value) => value.includes('.ipn.mx') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
   password: [ (value) => value.length >= 8 , 'El password debe tener más de 8 letras'],
   displayName : [ (value) => value.length >= 8 , 'El nombre es obligatorio y debe tener más de 8 letras']
 }
 
 export const RegisterPage = () => {
-
+  
+  let valid
   const dispatch = useDispatch()
   const [formSubmitted, setFormSubmitted] = useState(false)
 
@@ -27,22 +28,43 @@ export const RegisterPage = () => {
   const isCheckingAuthentication = useMemo(() => status === 'authenticated', [status])
 
   const {formState, displayName, email, password, onInputChange,
-          isFormValid, displayNameValid, emailValid, passwordValid} = useForm( formData, formValidations)
+    isFormValid, displayNameValid, emailValid, passwordValid} = useForm( formData, formValidations)
+
+  const validUserAndEmail = (displayName, email) => {
+    let regex = /(\d+)/g;
+    const newname = displayName.toLowerCase().split(' ')
+    if(newname.length <=2) return false
+    const newEmailTest = email.substr(1, (email.indexOf(email.match(regex)[0])-2))
+    
+    let searchLastName = 0
+    for( const value of newname){
+      searchLastName++
+      if(value === newEmailTest){
+        break
+      }
+    }
+    let validate
+    if(searchLastName === 1){ //1 y 2
+      validate = newname[searchLastName+1].substr(0, 1) + newname[searchLastName*0] + newname[searchLastName].substr(0, 1)
+    }else if((searchLastName === 2) || (searchLastName === 3)){ //2 y 3
+      validate = newname[searchLastName*0].substr(0, 1) + newname[searchLastName-1] + newname[searchLastName].substr(0, 1)
+    }
+    return email.substr(0,email.search('@')).includes(validate)
+  }
 
   const onSubmit = (event) => {
     event.preventDefault()
     setFormSubmitted(true)
-    const valid = validEmail(formState.email, formState.displayName)
-    if (!isFormValid) return;
-
+    // valid = validUserAndEmail(formState.email, formState.displayName)
+    valid = isFormValid
+    valid = validUserAndEmail(displayName, email)
+    console.log(valid)
+    if (!valid) return;
     dispatch(startCreatingUserWithEmailPassword(formState))
     // console.log(formState)
     // console.log(valid)
-    // console.log(!isFormValid)
   }
 
-  let validUser = false
-  const validEmail = (email, name) => email.substr(0,email.search('@')).includes(name.toLowerCase().split(' ')[0].substr(0, 1) + name.toLowerCase().split(' ')[2] + name.toLowerCase().split(' ')[3].substr(0, 1))
 
   return (
     <AuthLayout title='Crear Cuenta'>
@@ -64,7 +86,7 @@ export const RegisterPage = () => {
               item
               xs = {12}
               sx = {{mt:2}}
-              display= {!!validUser?'':'none'}>
+              display= {!!!valid?'':'none'}>
               <Alert severity='error'>El nombre del usuario ⬆️ y el correo no coinciden ⬇️</Alert>
             </Grid>
           </Grid>

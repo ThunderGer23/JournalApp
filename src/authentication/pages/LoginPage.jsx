@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from '../../hooks'
 import { Google } from '@mui/icons-material'
 import { AuthLayout } from '../layout/AuthLayout'
@@ -7,21 +7,31 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkingAuthentication, startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth'
 import { Alert, Button, Grid, Link, TextField, Typography } from '@mui/material'
 
+const formData = {
+  email: '',
+  password: ''
+}
+
+const formValidations = {
+  email: [ (value) => value.includes('.ipn.mx') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
+  password: [ (value) => value.length >= 8 , 'El password debe tener más de 8 letras'],
+}
+
 export const LoginPage = () => {
 
   const {status, errorMessage} = useSelector( state => state.auth)
 
   const dispatch = useDispatch()
-  const {email, password, onInputChange} = useForm({
-    email: 'R2D2@alumno.ipn.mx',
-    password: 'EquinoR2D2'
-  })
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const {formState, isFormValid, email, password, emailValid, passwordValid, onInputChange} = useForm(formData, formValidations)
 
   const isAuthenticating = useMemo(() => status === 'authenticated', [status])
 
   const onSubmit = event => {
     event.preventDefault()
     // dispatch(checkingAuthentication(email, password))
+    setFormSubmitted(true)
+    if (!isFormValid) return;
     dispatch(startLoginWithEmailPassword( {email, password} ))
   }
 
@@ -38,9 +48,12 @@ export const LoginPage = () => {
               label='Correo Institucional'
               type='email'
               placeholder='correo@alumno.ipn.mx'
+              required
               name='email'
               value = {email}
               onChange={onInputChange}
+              error ={!!emailValid && formSubmitted}
+              helperText={(formSubmitted)?emailValid:null}
               fullWidth/>
           </Grid>
           <Grid
@@ -55,8 +68,11 @@ export const LoginPage = () => {
               label='Contraseña'
               type='password'
               placeholder='Contraseña'
+              required
               name='password'
               value = {password}
+              error ={!!passwordValid &&  formSubmitted}
+              helperText={(formSubmitted)?passwordValid:null}
               onChange = {onInputChange}
               fullWidth/>
           </Grid>
