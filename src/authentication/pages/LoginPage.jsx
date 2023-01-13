@@ -4,12 +4,12 @@ import { Google } from '@mui/icons-material'
 import { AuthLayout } from '../layout/AuthLayout'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { checkingAuthentication, startGoogleSignIn } from '../../store/auth'
-import { Button, Grid, Link, TextField, Typography } from '@mui/material'
+import { checkingAuthentication, startGoogleSignIn, startLoginWithEmailPassword } from '../../store/auth'
+import { Alert, Button, Grid, Link, TextField, Typography } from '@mui/material'
 
 export const LoginPage = () => {
 
-  const {status} = useSelector( state => state.auth)
+  const {status, errorMessage} = useSelector( state => state.auth)
 
   const dispatch = useDispatch()
   const {email, password, onInputChange} = useForm({
@@ -21,7 +21,8 @@ export const LoginPage = () => {
 
   const onSubmit = event => {
     event.preventDefault()
-    dispatch(checkingAuthentication(email, password))
+    // dispatch(checkingAuthentication(email, password))
+    dispatch(startLoginWithEmailPassword( {email, password} ))
   }
 
   const onGoogleSignIn = () => {
@@ -42,7 +43,13 @@ export const LoginPage = () => {
               onChange={onInputChange}
               fullWidth/>
           </Grid>
-          
+          <Grid
+            item
+            xs = {12}
+            sx = {{mt:2}}
+            display= {!!errorMessage?'':'none'}>
+            <Alert severity='error'>{errorMessage}</Alert>
+          </Grid>
           <Grid item xs = {12} sx= {{mt:2}}>
             <TextField
               label='Contraseña'
