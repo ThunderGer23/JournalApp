@@ -10,19 +10,25 @@ export const CheckingAuth = () => {
         justifyContent= 'center'
         sx= {{ minHeight: '100vh', backgroundColor: 'primary.main', padding: 4}}>
 
-        <Grid
-            item
+        {/* <Grid
+            container
             direction = 'row'
             justifyContent = 'center'>
-                <Skeleton variant="circular" width={140} height={140}>
-                    <img
-                        style = {{ width: 210, height: 118 }}
-                        alt= 'logo athenea'
-                        src= 'https://play-lh.googleusercontent.com/DTzWtkxfnKwFO3ruybY1SKjJQnLYeuK3KmQmwV5OQ3dULr5iXxeEtzBLceultrKTIUTr'
-                    />
-                </Skeleton>
-                    <CircularProgress color='inherit' />
+                
+            <img
+                style = {{ width: 163}}
+                alt= 'logo athenea'
+                src= 'public\img\logo.png'
+            />
+        </Grid> */}
+
+        <Grid
+            container
+            direction = 'row'
+            justifyContent = 'center'>
+                <CircularProgress color='inherit' />
         </Grid>
+
 
     </Grid>
   )
