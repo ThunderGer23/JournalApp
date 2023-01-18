@@ -86,7 +86,7 @@ export const RegisterPage = () => {
               item
               xs = {12}
               sx = {{mt:2}}
-              display= {!!!valid?'':'none'}>
+              display= {!!valid?'':'none'}>
               <Alert severity='error'>El nombre del usuario ⬆️ y el correo no coinciden ⬇️</Alert>
             </Grid>
           </Grid>
