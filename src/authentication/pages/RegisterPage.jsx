@@ -20,7 +20,6 @@ const formValidations = {
 
 export const RegisterPage = () => {
   
-  let valid
   const dispatch = useDispatch()
   const [formSubmitted, setFormSubmitted] = useState(false)
 
@@ -30,39 +29,11 @@ export const RegisterPage = () => {
   const {formState, displayName, email, password, onInputChange,
     isFormValid, displayNameValid, emailValid, passwordValid} = useForm( formData, formValidations)
 
-  const validUserAndEmail = (displayName, email) => {
-    let regex = /(\d+)/g;
-    const newname = displayName.toLowerCase().split(' ')
-    if(newname.length <=2) return false
-    const newEmailTest = email.substr(1, (email.indexOf(email.match(regex)[0])-2))
-    
-    let searchLastName = 0
-    for( const value of newname){
-      searchLastName++
-      if(value === newEmailTest){
-        break
-      }
-    }
-    let validate
-    if(searchLastName === 1){ //1 y 2
-      validate = newname[searchLastName+1].substr(0, 1) + newname[searchLastName*0] + newname[searchLastName].substr(0, 1)
-    }else if((searchLastName === 2) || (searchLastName === 3)){ //2 y 3
-      validate = newname[searchLastName*0].substr(0, 1) + newname[searchLastName-1] + newname[searchLastName].substr(0, 1)
-    }
-    return email.substr(0,email.search('@')).includes(validate)
-  }
-
   const onSubmit = (event) => {
     event.preventDefault()
     setFormSubmitted(true)
-    // valid = validUserAndEmail(formState.email, formState.displayName)
-    valid = isFormValid
-    valid = validUserAndEmail(displayName, email)
-    console.log(valid)
-    if (!valid) return;
+    if (!isFormValid) return;
     dispatch(startCreatingUserWithEmailPassword(formState))
-    // console.log(formState)
-    // console.log(valid)
   }
 
 
@@ -86,8 +57,8 @@ export const RegisterPage = () => {
               item
               xs = {12}
               sx = {{mt:2}}
-              display= {!!valid?'':'none'}>
-              <Alert severity='error'>El nombre del usuario ⬆️ y el correo no coinciden ⬇️</Alert>
+              display= {!!errorMessage?'':'none'}>
+              <Alert severity='error'>{errorMessage}</Alert>
             </Grid>
           </Grid>
 
@@ -103,16 +74,8 @@ export const RegisterPage = () => {
               error ={!!emailValid && formSubmitted}
               helperText={(formSubmitted)?emailValid:null}/>
 
-            <Grid
-              item
-              xs = {12}
-              sx = {{mt:2}}
-              display= {!!errorMessage?'':'none'}>
-              <Alert severity='error'>{errorMessage}</Alert>
-            </Grid>
-
           </Grid>
-          
+
           <Grid item xs = {12} sx= {{mt:2}}>
             <TextField
               label="Contraseña"
