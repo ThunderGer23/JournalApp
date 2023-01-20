@@ -1,4 +1,3 @@
-import { async } from '@firebase/util';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { FirebaseAuth } from './config';
 

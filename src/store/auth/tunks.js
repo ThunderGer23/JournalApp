@@ -1,4 +1,3 @@
-import { async } from "@firebase/util"
 import { loginWithEmailPassword, logoutFirebase, registerUserWithEmailPassword, singInWithGoogle } from "../../firebase"
 import { checkingCredentials, login, logout } from "./"
 

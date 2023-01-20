@@ -9,6 +9,9 @@ export const journalSlice = createSlice({
         active: null,
     },
    reducers : {
+       savingNewNote: (state) => {
+            state.isSaving = false
+       },
        addNewEmptyNote: (state, action) => {
             // Estas son funciones puras/sincronas, no podemos introducir nada asincrono
             state.notes.push(action.payload)
@@ -33,6 +36,7 @@ export const journalSlice = createSlice({
 })
 
 export const {
+    savingNewNote,
     addNewEmptyNote,
     setActiveNote,
     setNotes,
