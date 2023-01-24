@@ -3,6 +3,13 @@ import { FirebaseAuth } from './config';
 
 const googleProvider = new GoogleAuthProvider()
 
+/**
+ * It takes a display name and an email address, and returns true if the email address is valid for the
+ * display name, and false otherwise.
+ * @param displayName - "John Doe"
+ * @param email - "juan.perez@gmail.com"
+ * @returns A boolean value.
+ */
 const validUserAndEmail = (displayName, email) => {
     const newname = displayName.toLowerCase().split(' ')
     if(newname.length <=2) return false
@@ -21,6 +28,15 @@ const validUserAndEmail = (displayName, email) => {
     return email.substr(0,email.search('@')).includes(validate)
 }
 
+/**
+ * It takes a user's Google account and returns a user object with the user's name, email, photo, and
+ * uid.
+ * @returns An object with the following properties:
+ * ok: true,
+ * displayName: "John Doe",
+ * email: "johndoe@gmail.com",
+ * photoURL: "https://lh3.googleusercontent.com/a-/AOh14GjQ_xXxXxXxXxXxXxXxXxXxXx
+ */
 export const singInWithGoogle = async() => {
     try {
         const result = await signInWithPopup(FirebaseAuth, googleProvider)
@@ -39,6 +55,11 @@ export const singInWithGoogle = async() => {
     }
 }
 
+/**
+ * It takes an object with three properties: email, password, and displayName. It then creates a user
+ * with the email and password, and then updates the displayName
+ * @returns an object with the following properties:
+ */
 export const registerUserWithEmailPassword = async({email, password, displayName}) => {
     try {
         const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password)
@@ -58,6 +79,17 @@ export const registerUserWithEmailPassword = async({email, password, displayName
     }
 }
 
+/**
+ * It takes an object with an email and password property, and returns an object with an ok property,
+ * and if ok is true, it also returns a uid, photoURL, and displayName property
+ * @returns An object with the following properties:
+ * ok: true or false
+ * uid: the user id
+ * photoURL: the user photo url
+ * displayName: the user display name
+ * errorMessage: the error message
+ * errorCode: the error code
+ */
 export const loginWithEmailPassword = async({email, password}) => {
     try {
         const resp = await signInWithEmailAndPassword(FirebaseAuth, email, password)
@@ -71,6 +103,11 @@ export const loginWithEmailPassword = async({email, password}) => {
     }
 }
 
+/**
+ * This function will return a promise that will resolve to the result of the FirebaseAuth.signOut()
+ * function.
+ * @returns The return value is a Promise.
+ */
 export const logoutFirebase = async() => {
     return await FirebaseAuth.signOut()
 }

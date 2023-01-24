@@ -6,29 +6,39 @@ import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { startCreatingUserWithEmailPassword } from '../../store/auth'
 
+/* An object that contains the initial values of the form. */
 const formData = {
   email: '',
   password: '',
   displayName: ''
 }
 
+/* An object that contains the validations for the form. */
 const formValidations = {
   email: [ (value) => value.includes('.ipn.mx') && value.length >= 8 && (value.includes('docente') || value.includes('alumno')), 'El correo debe pertenecer al instituto'],
   password: [ (value) => value.length >= 8 , 'El password debe tener más de 8 letras'],
   displayName : [ (value) => value.length >= 8 , 'El nombre es obligatorio y debe tener más de 8 letras']
 }
 
+/* A function that returns a form. */
 export const RegisterPage = () => {
   
+  /* A hook that is used to get the state of the store. */
   const dispatch = useDispatch()
   const [formSubmitted, setFormSubmitted] = useState(false)
 
+  /* A hook that is used to get the state of the store. */
   const {status, errorMessage} = useSelector(state => state.auth)
   const isCheckingAuthentication = useMemo(() => status === 'authenticated', [status])
 
+  /* Destructuring the object returned by the useForm hook. */
   const {formState, displayName, email, password, onInputChange,
     isFormValid, displayNameValid, emailValid, passwordValid} = useForm( formData, formValidations)
 
+  /**
+   * If the form is valid, then dispatch the action to create a user with email and password.
+   * @returns The dispatch function is being returned.
+   */
   const onSubmit = (event) => {
     event.preventDefault()
     setFormSubmitted(true)
@@ -37,6 +47,7 @@ export const RegisterPage = () => {
   }
 
 
+  /* Returning the form. */
   return (
     <AuthLayout title='Crear Cuenta'>
       <form onSubmit={onSubmit} action="">

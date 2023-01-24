@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+
 export const useForm = ( initialForm = {}, formValidations = {}) => {
     const [ formState, setFormState ] = useState( initialForm )
     const [ formValidation, setFormValidation] = useState({})
@@ -6,6 +7,7 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
       createValidators()
     }, [formState])
     
+    /* Checking if the form is valid. */
     const isFormValid = useMemo(() => {
         for(const formValue of Object.keys(formValidation)){
             if (formValidation[formValue] !== null ) return false
@@ -13,6 +15,9 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
         return true
     }, [formValidation])
 
+    /**
+     * When the input changes, update the form state with the new value.
+     */
     const onInputChange = ({ target }) => {
         const { name, value } = target
         setFormState({
@@ -20,9 +25,18 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
             [ name ]: value
         });
     }
+
+    /**
+     * When the reset button is clicked, the form state is set to the initial form state.
+     */
     const onResetForm = () => {
         setFormState( initialForm )
     }
+
+    /**
+     * It takes the formValidations object and creates a new object with the same keys but with the
+     * values being the result of the function in the formValidations object.
+     */
     const createValidators = () => {
         const formCheckedValues = {}
         for (const formField of Object.keys(formValidations)) {
@@ -30,8 +44,8 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
             formCheckedValues[`${formField}Valid`] = fn(formState[formField])?null:errorMessage
         }
         setFormValidation(formCheckedValues)
-        // console.log(formCheckedValues);
     }
+    /* Returning the formState, onInputChange, onResetForm, formValidation and isFormValid. */
     return {
         ...formState,
         formState,

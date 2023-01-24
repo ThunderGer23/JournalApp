@@ -2,6 +2,7 @@ import {List, ListItem, ListItemText, ListItemAvatar, Avatar, Button} from '@mui
 import {Description } from '@mui/icons-material';
 
 export const FilesList = () => {
+  /* A list of buttons with a description icon and a text. */
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {[{name: 'material'}, {name: 'mates'}, {name: 'prepa'}].map((value) => (
