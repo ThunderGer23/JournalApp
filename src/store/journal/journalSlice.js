@@ -13,7 +13,7 @@ export const journalSlice = createSlice({
    reducers : {
        /* It's a reducer function that will be called when the action `savingNewNote` is dispatched. */
        savingNewNote: (state) => {
-            state.isSaving = false
+            state.isSaving = true
        },
        /* It's a reducer function that will be called when the action `addNewEmptyNote` is dispatched. */
        addNewEmptyNote: (state, action) => {

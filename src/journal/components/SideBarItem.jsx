@@ -1,23 +1,32 @@
 import { AccountBox, FileCopy, Home, Settings } from '@mui/icons-material'
 import { Grid, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { useMemo } from 'react'
+import { useDispatch } from 'react-redux'
+import { setActiveNote } from '../../store/journal/journalSlice'
 
-export const SideBarItem = ({note}) => {
+export const SideBarItem = ({title, body, id, date, imageUrls}) => {
+
+  const newTitle = useMemo(() =>title.slice(0,5).concat('...'), [title])
+  const dispatch = useDispatch()
+  const onClickNote = () => {
+    dispatch(setActiveNote({title, body, id, date, imageUrls}))
+  }
   return (
     <ListItem disablePadding>
-        <ListItemButton>
+        <ListItemButton onClick={onClickNote}>
             <ListItemIcon>
-              {(note.title === 'Home')?
+              {(title === 'Home')?
                   <Home />:
-                  (note.title === 'Perfil')?
+                  (title === 'Perfil')?
                   <AccountBox />:
-                  (note.title === 'Documents')?
+                  (title === 'Documents')?
                   <FileCopy />:
                   <Settings />
-                  }{'  '+note.title}
+                  }
             </ListItemIcon>
             <Grid container>
-                <ListItemText primary= {note.title} />
-                <ListItemText secondary= {note.date} />
+                <ListItemText primary= {newTitle} />
+                <ListItemText secondary= {date} />
             </Grid>
         </ListItemButton>
     </ListItem>
