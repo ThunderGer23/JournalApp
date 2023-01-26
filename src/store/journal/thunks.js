@@ -30,10 +30,7 @@ export const startNewNote = () => {
     }
 }
 
-/**
- * It gets the user id from the state and then it loads the notes from the database
- * @returns an anonymous function that is going to be executed by the redux-thunk middleware.
- */
+
 export const startLoadingNotes = () => {
     return async (dispatch, getState) => {
         /* Getting the user id from the state and then it is loading the notes from the database. */
