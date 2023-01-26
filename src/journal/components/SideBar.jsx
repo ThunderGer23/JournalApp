@@ -29,7 +29,7 @@ export const SideBar = ({drawerWidth = 120}) => {
                     <Divider />
                     <List>
                         {notes.map( note => (
-                            <SideBarItem key= {note.id} note = {note}/>
+                            <SideBarItem key= {note.id} {...note}/>
                         ))}
                     </List>
             </Drawer>

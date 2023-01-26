@@ -13,12 +13,11 @@ export const loadNotes = async(uid = '') => {
     */
 
     if(!uid) throw new Error('El IUD del usuario no existe')
-    const collectionRef = collection(FirebaseDB, `${uid}/journal/notes}`)
-    const docs = await getDocs(collectionRef)
+    const docs = await getDocs(collection(FirebaseDB, `${uid}/journal/notes`))
     const notes = []
     /* Iterating over the docs array and pushing the id and data into the notes array. */
     docs.forEach(doc => {
-        notes.push({id: doc.id, ...doc.data})
+        notes.push({id: doc.id, ...doc.data()})
     })
     return notes
 }
