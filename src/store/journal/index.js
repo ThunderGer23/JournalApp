@@ -1,2 +1,2 @@
 export * from './journalSlice';
-export { startLoadingNotes, startNewNote, startSaveNotes } from './thunks';
+export { startLoadingNotes, startNewNote, startSaveNotes, startUploadingFiles } from './thunks';

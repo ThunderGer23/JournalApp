@@ -1,13 +1,14 @@
 import { ImageGalery, FilesList } from "../components"
-import { Assessment, SaveOutlined } from "@mui/icons-material"
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import { Assessment, SaveOutlined, UploadFile } from "@mui/icons-material"
+import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { NothingSelectedView } from "./"
 import { useForm } from "../../hooks/"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useMemo } from "react"
-import { setActiveNote, startSaveNotes } from "../../store/journal"
+import { setActiveNote, startSaveNotes, startUploadingFiles } from "../../store/journal"
 import Swal from "sweetalert2"
 import 'sweetalert2/dist/sweetalert2.css'
+import { useRef } from "react"
 export const NoteView = () => {
 
   const dispatch = useDispatch()
@@ -15,9 +16,11 @@ export const NoteView = () => {
   const { body, title, date, onInputChange, formState} = useForm(noteActive)
 
   const dateString = useMemo(() => {
-    const newDate = new Date(date)
-    return newDate.toUTCString()
+    const newDate = new Date(date).toUTCString().replace('GMT', '')
+    return newDate.replace(newDate.split(' ')[newDate.split(' ').length-2], '')
   }, [date])
+
+  const fileInputRef = useRef()
 
   useEffect(() => {
     dispatch(setActiveNote( formState))
@@ -31,6 +34,8 @@ export const NoteView = () => {
 
   const onSaveNote = () => dispatch(startSaveNotes())
 
+  const onFileInputChange = ({target}) => {if(target.files !== 0) dispatch(startUploadingFiles(target.files))}
+
   return (
     <Grid container
       direction='row'
@@ -38,19 +43,41 @@ export const NoteView = () => {
       alignItems='center'
       sx={{mb:1}}
       className = 'animate__animated animte__fadeIn animate__faster'>
+
+        <input
+          type= "file"
+          ref= {fileInputRef}
+          onChange = {onFileInputChange}
+          style = {{display:'none'}}
+          multiple // The multiple would withdraw to only allow the load of a document
+          />
         
-        <Grid item>
-          <Typography fontSize={39} fontWeight = 'light'> {dateString} </Typography>
-        </Grid>
-        <Grid item>
-          <Button 
-            color= "primary"
-            disabled= {isSaving}
-            sx= {{padding: 2}}
-            onClick = {onSaveNote}>
-            <SaveOutlined sx={{fontSize: 30, mr: 1}}/>
-            Guardar
-          </Button>
+        <Grid
+          container
+          direction= 'row'
+          justifyContent='space-between'
+          alignItems='center'>
+          <Grid item>
+            <Typography fontSize={39} fontWeight = 'light'> {dateString} </Typography>
+          </Grid>
+          
+          <Grid item>
+            <IconButton
+              color="primary.main"
+              disabled = {isSaving}
+              onClick = { () => fileInputRef.current.click()}
+              sx = {{flexGrow: 1}}>
+                <UploadFile/>
+            </IconButton>
+            <Button 
+              color= "primary"
+              disabled= {isSaving}
+              sx= {{padding: 2, flexGrow: 1}}
+              onClick = {onSaveNote}>
+              <SaveOutlined sx={{fontSize: 30, mr: 1}}/>
+              Guardar
+            </Button>
+          </Grid>
         </Grid>
         <Grid container>
           <TextField 

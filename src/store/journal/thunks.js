@@ -1,7 +1,7 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { FirebaseDB } from "../../firebase"
-import { loadNotes } from "../../helpers"
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSavingNote, updateNote } from "./journalSlice"
+import { fileUpload, loadNotes } from "../../helpers"
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNotes, setSavingNote, updateNote } from "./journalSlice"
 
 /**
  * It creates a new note, adds it to the database, and then adds it to the state.
@@ -52,5 +52,21 @@ export const startSaveNotes = () => {
         const docRef = doc(FirebaseDB, `${uid}/journal/notes/${activeNote.id}`)
         await setDoc(docRef, noteToFireStore, {merge: true})
         dispatch(updateNote(activeNote))
+    }
+}
+
+// This method only receives a file for our project then should not be a []
+export const startUploadingFiles = (files = []) => {
+    return async (dispatch) => {
+        dispatch(setSavingNote())
+        // await fileUpload( files[0])
+        const fileUploadPromises = []
+        for (const file of files) {
+            fileUploadPromises.push(fileUpload(file))
+        }
+
+        const photoUrls = await Promise.all(fileUploadPromises)
+        dispatch(setPhotosToActiveNotes(photoUrls))
+
     }
 }
