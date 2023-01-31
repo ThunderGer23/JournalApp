@@ -24,6 +24,7 @@ export const journalSlice = createSlice({
        /* It's a reducer function that will be called when the action `setActiveNote` is dispatched. */
        setActiveNote: (state, action) => {
             state.active = action.payload
+            state.messageSaved = ''
        },
        /* It's a reducer function that will be called when the action `setNotes` is dispatched. */
        setNotes: (state, action) => {
@@ -31,11 +32,20 @@ export const journalSlice = createSlice({
        },
        /* Nothing. It's a placeholder for a future action. */
        setSavingNote: (state) => {
-
+          state.isSaving = true
+          state.messageSaved = ''
        },
        /* A reducer function that will be called when the action `updateNote` is dispatched. */
        updateNote: (state, action) => {
+          state.isSaving = false
+          state.notes = state.notes.map(note => {
+               if(note.id === action.payload.id) {
+                    return action.payload
+               }
+               return note
+          })
 
+          state.messageSaved = `"${action.payload.title}" actualizada correctamente`
        },
        /* A reducer function that will be called when the action `deleteNoteById` is dispatched. */
        deleteNoteById: (state, action) => {

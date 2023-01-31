@@ -8,21 +8,19 @@ export const SideBarItem = ({title, body, id, date, imageUrls}) => {
 
   const newTitle = useMemo(() =>title.slice(0,5).concat('...'), [title])
   const dispatch = useDispatch()
-  const onClickNote = () => {
-    dispatch(setActiveNote({title, body, id, date, imageUrls}))
-  }
+  const onClickNote = () => dispatch(setActiveNote({title, body, id, date, imageUrls}))
   return (
     <ListItem disablePadding>
         <ListItemButton onClick={onClickNote}>
             <ListItemIcon>
-              {(title === 'Home')?
+              { (title === 'Home')?
                   <Home />:
-                  (title === 'Perfil')?
+                (title === 'Perfil')?
                   <AccountBox />:
-                  (title === 'Documents')?
+                (title === 'Documents')?
                   <FileCopy />:
                   <Settings />
-                  }
+              }
             </ListItemIcon>
             <Grid container>
                 <ListItemText primary= {newTitle} />

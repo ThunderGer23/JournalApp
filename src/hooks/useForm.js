@@ -3,10 +3,18 @@ import { useEffect, useMemo, useState } from 'react'
 export const useForm = ( initialForm = {}, formValidations = {}) => {
     const [ formState, setFormState ] = useState( initialForm )
     const [ formValidation, setFormValidation] = useState({})
+
+    /* Checking if the form is valid. */
     useEffect(() => {
       createValidators()
     }, [formState])
-    
+
+    /* Resetting the form state when the initialForm changes. */
+    useEffect(() => {
+      setFormState( initialForm )
+    }, [initialForm])
+
+
     /* Checking if the form is valid. */
     const isFormValid = useMemo(() => {
         for(const formValue of Object.keys(formValidation)){

@@ -1,7 +1,7 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite"
 import { FirebaseDB } from "../../firebase"
 import { loadNotes } from "../../helpers"
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice"
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSavingNote, updateNote } from "./journalSlice"
 
 /**
  * It creates a new note, adds it to the database, and then adds it to the state.
@@ -30,7 +30,6 @@ export const startNewNote = () => {
     }
 }
 
-
 export const startLoadingNotes = () => {
     return async (dispatch, getState) => {
         /* Getting the user id from the state and then it is loading the notes from the database. */
@@ -38,5 +37,20 @@ export const startLoadingNotes = () => {
         if(!uid) throw new Error('El id de usuario no existe')
         const notes = await loadNotes(uid)
         dispatch (setNotes(notes))
+    }
+}
+
+export const startSaveNotes = () => {
+    return async (dispatch, getState) => {
+        dispatch(setSavingNote())
+        const {uid} = getState().auth
+        const {active:activeNote} = getState().journal
+
+        const noteToFireStore = {...activeNote}
+        delete noteToFireStore.id
+        delete noteToFireStore.imageUrls
+        const docRef = doc(FirebaseDB, `${uid}/journal/notes/${activeNote.id}`)
+        await setDoc(docRef, noteToFireStore, {merge: true})
+        dispatch(updateNote(activeNote))
     }
 }

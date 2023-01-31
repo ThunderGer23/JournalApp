@@ -2,7 +2,7 @@ import {ImageListItem, ImageList} from '@mui/material';
 /* A React component that is returning a JSX element. */
 export const ImageGalery = () => {
   return (
-    <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+    <ImageList sx={{ width: 'auto', height: 450 }} cols={5} rowHeight={164}>
       {itemData.map((item) => (
         <ImageListItem key={item.img}>
           <img
