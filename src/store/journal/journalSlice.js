@@ -47,24 +47,35 @@ export const journalSlice = createSlice({
 
           state.messageSaved = `"${action.payload.title}" actualizada correctamente`
        },
+       clearNotesLogout: (state) => {
+          state.isSaving = false
+          state.messageSaved = ''
+          state.notes = []
+          state.active = null
+       },
        setPhotosToActiveNotes: (state, action) => {
           state.active.imageUrls = (state.active.imageUrls)?[...state.active.imageUrls,...action.payload]:[...action.payload]
           state.isSaving = false
+          state.messageSaved = `Archivos cargados`
        },
        /* A reducer function that will be called when the action `deleteNoteById` is dispatched. */
        deleteNoteById: (state, action) => {
-
+          state.isSaving = false
+          state.active = null
+          state.notes = state.notes.filter(note => note.id !== action.payload)
        }
    }
 })
 
 /* It's exporting the actions that we have defined in the reducer. */
 export const {
-    savingNewNote,
-    addNewEmptyNote,
-    setActiveNote,
-    setNotes,
-    setSavingNote,
-    updateNote,
-    setPhotosToActiveNotes,
-    deleteNoteById} = journalSlice.actions
+     addNewEmptyNote,
+     clearNotesLogout,
+     deleteNoteById,
+     savingNewNote,
+     setActiveNote,
+     setNotes,
+     setPhotosToActiveNotes,
+     setSavingNote,
+     updateNote,
+} = journalSlice.actions
