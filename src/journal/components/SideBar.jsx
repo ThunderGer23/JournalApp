@@ -23,7 +23,7 @@ export const SideBar = ({drawerWidth = 120}) => {
                             variant="h6"
                             noWrap
                             component='div'>
-                                Athena
+                                I💘Jouarnal
                         </Typography>
                     </Toolbar>
                     <Divider/>

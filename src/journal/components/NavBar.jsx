@@ -32,7 +32,7 @@ export const NavBar = ({drawerWidth = 240}) => {
                     <Typography 
                         variant= 'h6'
                         noWrap
-                        component= 'div'> Journal App</Typography>
+                        component= 'div'> I💘Journal</Typography>
 
                     <IconButton 
                         color= 'error'
