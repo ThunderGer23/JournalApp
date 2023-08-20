@@ -13,14 +13,7 @@ export const SideBarItem = ({title, body, id, date, imageUrls}) => {
     <ListItem disablePadding>
         <ListItemButton onClick={onClickNote}>
             <ListItemIcon>
-              { (title === 'Home')?
-                  <Home />:
-                (title === 'Perfil')?
-                  <AccountBox />:
-                (title === 'Documents')?
-                  <FileCopy />:
-                  <Settings />
-              }
+              <FileCopy />
             </ListItemIcon>
             <Grid container>
                 <ListItemText primary= {newTitle} />
